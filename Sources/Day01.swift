@@ -35,7 +35,17 @@ struct Day01: AdventDay {
 
   // Replace this with your solution for the second part of the day's challenge.
   func part2() -> Any {
-    // Sum the maximum entries in each set of data
-    return 0
+    var similarityScore = 0
+
+    var leftCounts = [Int: Int]()
+    var rightCounts = [Int: Int]()
+    leftValues.forEach { leftCounts[$0, default: 0] += 1 }
+    rightValues.forEach { rightCounts[$0, default: 0] += 1 }
+    
+    for left in leftCounts {
+      similarityScore += left.key * left.value * rightCounts[left.key, default: 0]
+    }
+
+    return similarityScore // 29379307
   }
 }
