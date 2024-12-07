@@ -25,6 +25,46 @@ struct Day03: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+
+    let r = Regex {
+      ChoiceOf {
+        /(don't)/
+        /(do)/
+        Regex {
+          Capture { "mul" }
+          "("
+          Capture {
+            OneOrMore(.digit)
+          } transform: {Int($0)!}
+          ","
+          Capture {
+            OneOrMore(.digit)
+          } transform: {Int($0)!}
+          ")"
+        }
+      }
+    }
+
+    let instructions = data.matches(of: r)
+
+    var enable = true
+    var total = 0
+
+    for instruction in instructions {
+      switch instruction.output {
+      case (_, "don't"?, nil, nil, nil, nil):
+        enable = false
+      case (_, nil, "do"?, nil, nil, nil):
+        enable = true
+      case (_, nil, nil, "mul"?, let arg1, let arg2):
+        if enable {
+          total += arg1! * arg2!
+        }
+      default:
+        print("unknown")
+      }
+    }
+
+    return total // 111762583
   }
 }
