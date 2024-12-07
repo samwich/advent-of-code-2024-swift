@@ -26,7 +26,7 @@ struct Day02: AdventDay {
       
       let safeRange = 1...3
 
-      for i in 0..<levels.count-2 {
+      for i in 0..<levels.count-1 {
         let delta = levels[i+1] - levels[i]
         if safeRange.contains(delta * strategy) {
           continue
@@ -42,7 +42,7 @@ struct Day02: AdventDay {
   // Replace this with your solution for the first part of the day's challenge.
   func part1() -> Any {
 
-    return entities.filter(\.safe).count // 394 is too high
+    return entities.filter(\.safe).count // 371
   }
 
   // Replace this with your solution for the second part of the day's challenge.
