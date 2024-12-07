@@ -41,58 +41,17 @@ struct Day02: AdventDay {
       if safe {
         return true
       }
-      print("Trying to dampen Report: \(levels)")
-      print("count: \(levels.count). Indexes 0..\(levels.count-1)")
+
       for i in 0..<levels.count {
-        print("   \(levels)")
         var modified = levels
         modified.remove(at: i)
         let r = Report(levels: modified)
         if r.safe {
-          print("\(i): \(modified) is SAFE")
           return true
         }
-        print("\(i): \(modified) is not safe")
       }
 
       return false
-    }
-
-    init(levels: [Int]) {
-      self.levels = levels
-    }
-
-    func unsafeOffsets() -> [String: [Int]] {
-      var offsets: [String: [Int]] = [:]
-      var strategy = 0
-      if levels[0] < levels[levels.count-1] {
-        strategy = 1
-      } else if levels[0] > levels[levels.count-1] {
-        strategy = -1
-      } else {
-//        print(levels)
-//        offsets.append(0)
-//        offsets.append(levels.count-1)
-      }
-      offsets["strategy"] = [strategy]
-
-      for i in 0..<levels.count-1 {
-        let delta = levels[i+1] - levels[i]
-        if safeDelta.contains(delta * strategy) {
-          continue
-        } else if safeDelta.contains(abs(delta)) {
-//          print(levels)
-//          print(i)
-//          offsets.append(i)
-//          print("Bad Direction: \(safeRange) contains abs(\(delta))")
-          offsets["badDirection", default: []].append(i)
-        } else {
-//          print("Bad Delta: \(safeRange) does not contain \(delta)")
-          offsets["badDelta", default: []].append(i)
-        }
-      }
-
-      return offsets
     }
   }
 
@@ -119,20 +78,8 @@ struct Day02: AdventDay {
     // Every report where the first and last levels are the same also has another problem making it unsafe.
     //
 
-//    var reportStats: [String: Int] = [:]
+    // In the end, I just did brute force.
 
-//    for e in entities {
-////      reportStats["\(e.firstUnsafeOffset()) of \(e.levels.count)", default: 0] += 1
-//      let unsafeOffsets = e.unsafeOffsets()
-//      let unsafeOffsetCount = unsafeOffsets["badDelta", default: []].count + unsafeOffsets["badDirection", default: []].count + (unsafeOffsets["strategy"]!.first! == 0 ? 1 : 0)
-//      if unsafeOffsetCount == 1 {
-//        print("Report:")
-//        print(e.levels)
-//        print(unsafeOffsets)
-//        print("Unsafe offset count: \(unsafeOffsetCount)")
-//      }
-//    }
-//    print(reportStats)
     let safeWithDamper = entities.filter(\.safeWithProblemDampener).count
     print("Safe with dampener: \(safeWithDamper) of \(entities.count)")
     return safeWithDamper // 426
