@@ -43,7 +43,7 @@ struct Day02: AdventDay {
       }
       print("Trying to dampen Report: \(levels)")
       print("count: \(levels.count). Indexes 0..\(levels.count-1)")
-      for i in 0..<levels.count-1 {
+      for i in 0..<levels.count {
         print("   \(levels)")
         var modified = levels
         modified.remove(at: i)
@@ -135,6 +135,6 @@ struct Day02: AdventDay {
 //    print(reportStats)
     let safeWithDamper = entities.filter(\.safeWithProblemDampener).count
     print("Safe with dampener: \(safeWithDamper) of \(entities.count)")
-    return safeWithDamper // 411 is too low
+    return safeWithDamper // 426
   }
 }
