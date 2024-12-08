@@ -20,12 +20,11 @@ struct Day05: AdventDay {
     beforeRules = rules
     updates = entities.last!.map {
       let pageNumbers = $0.split(separator: ",").map { Int($0)! }
-      return Update(rules: rules, pages: pageNumbers)
+      return Update(rules: rules, pageNumbers: pageNumbers)
     }
   }
 
   struct Update {
-    let rules: [Int: Set<Int>]
     let corrected: Bool
     var pages: [Int]
 
@@ -34,10 +33,12 @@ struct Day05: AdventDay {
       return pages[middleIndex]
     }
 
-    init(rules: [Int : Set<Int>], pages: [Int]) {
+    init(rules: [Int : Set<Int>], pageNumbers: [Int]) {
+      var pages = pageNumbers
       var corrected = false
+      var i = 0
 
-      for i in 0..<pages.count {
+      while i < pages.count {
         let page = pages[i]
         // if there are rules for this page number
         if let myRules = rules[page] {
@@ -46,14 +47,18 @@ struct Day05: AdventDay {
             let n = pages[j]
             if myRules.contains(n) {
               corrected = true
+              pages.swapAt(i, j)
+              i = j
+              // break out to top level, which will increment to the next index
+              break // for j
             }
           }
         } else {
           print("no rules for \(page)")
         }
+        i += 1
       }
 
-      self.rules = rules
       self.pages = pages
       self.corrected = corrected
     }
@@ -75,9 +80,13 @@ struct Day05: AdventDay {
   func part2() -> Any {
     var middleNumberSum = 0
 
+    for update in updates {
+      if update.corrected {
+        middleNumberSum += update.middleNumber
+      }
+    }
 
-
-    return middleNumberSum //
+    return middleNumberSum // 5479
   }
 
 }
