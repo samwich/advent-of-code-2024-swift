@@ -4,7 +4,7 @@ struct Day05: AdventDay {
   var data: String
   let entities: [[Substring]]
   let beforeRules: [Int: Set<Int>]
-  let updates: [[Int]]
+  let updates: [Update]
 
   init(data: String) {
     self.data = data
@@ -19,39 +19,65 @@ struct Day05: AdventDay {
     }
     beforeRules = rules
     updates = entities.last!.map {
-      $0.split(separator: ",").map { Int($0)! }
+      let pageNumbers = $0.split(separator: ",").map { Int($0)! }
+      return Update(rules: rules, pages: pageNumbers)
     }
   }
 
-  func part1() -> Any {
-    var middleNumberSum = 0
+  struct Update {
+    let rules: [Int: Set<Int>]
+    let corrected: Bool
+    var pages: [Int]
 
-    updateLoop: for update in updates {
-      for (i, page) in update.enumerated() {
+    var middleNumber: Int {
+      let middleIndex = pages.count / 2
+      return pages[middleIndex]
+    }
+
+    init(rules: [Int : Set<Int>], pages: [Int]) {
+      var corrected = false
+
+      for i in 0..<pages.count {
+        let page = pages[i]
         // if there are rules for this page number
-        if let myRules = beforeRules[page] {
+        if let myRules = rules[page] {
           // check that I should not be before each preceding page
           for j in 0..<i {
-            let n = update[j]
+            let n = pages[j]
             if myRules.contains(n) {
-//              print("\(n) should be after \(page)")
-              continue updateLoop
+              corrected = true
             }
           }
         } else {
           print("no rules for \(page)")
         }
       }
-      // add the middle number to middleNumberSum
-      let middleIndex = update.count / 2
-      middleNumberSum += update[middleIndex]
+
+      self.rules = rules
+      self.pages = pages
+      self.corrected = corrected
+    }
+
+  }
+
+  func part1() -> Any {
+    var middleNumberSum = 0
+
+    for update in updates {
+      if !update.corrected {
+        middleNumberSum += update.middleNumber
+      }
     }
 
     return middleNumberSum // 5991
   }
 
   func part2() -> Any {
-    return "part2 not implemented"
+    var middleNumberSum = 0
+
+
+
+    return middleNumberSum //
   }
 
 }
