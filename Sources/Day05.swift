@@ -54,7 +54,7 @@ struct Day05: AdventDay {
             }
           }
         } else {
-          print("no rules for \(page)")
+//          print("no rules for \(page)")
         }
         i += 1
       }
