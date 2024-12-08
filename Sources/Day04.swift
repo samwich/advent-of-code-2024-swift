@@ -8,42 +8,8 @@ struct Day04: AdventDay {
   func part1() -> Any {
     let width = data.split(separator: "\n").first!.count
     print("width: \(width)")
-    let verticalOffset = width - 1
-    let diagonalDownRightOffset = width
-    let diagonalDownLeftOffset = width - 2
 
     let noNewLines = data.replacingOccurrences(of: "\n", with: "")
-
-    let rhf = try! Regex("XMAS")
-    let rhb = try! Regex("SAMX")
-    let rvf = try! Regex("X.{\(verticalOffset)}M.{\(verticalOffset)}A.{\(verticalOffset)}S")
-    let rvb = try! Regex("S.{\(verticalOffset)}A.{\(verticalOffset)}M.{\(verticalOffset)}X")
-    let rdnw = try! Regex("X.{\(diagonalDownRightOffset)}M.{\(diagonalDownRightOffset)}A.{\(diagonalDownRightOffset)}S")
-    let rdne = try! Regex("X.{\(diagonalDownLeftOffset) }M.{\(diagonalDownLeftOffset) }A.{\(diagonalDownLeftOffset) }S")
-    let rdsw = try! Regex("S.{\(diagonalDownLeftOffset) }A.{\(diagonalDownLeftOffset) }M.{\(diagonalDownLeftOffset) }X")
-    let rdse = try! Regex("S.{\(diagonalDownRightOffset)}A.{\(diagonalDownRightOffset)}M.{\(diagonalDownRightOffset)}X")
-
-    let hf = noNewLines.matches(of: rhf)
-    let hb = noNewLines.matches(of: rhb)
-    let vf = noNewLines.matches(of: rvf)
-    let vb = noNewLines.matches(of: rvb)
-    let dnw = noNewLines.matches(of: rdnw)
-    let dne = noNewLines.matches(of: rdne)
-    let dsw = noNewLines.matches(of: rdsw)
-    let dse = noNewLines.matches(of: rdse)
-
-//    let total = [hf, hb, vf, vb, dnw, dse, dne, dsw].map(\.count).reduce(0, +)
-
-//    print("hf: \(hf.count)")
-//    print("hb: \(hb.count)")
-//    print("vf: \(vf.count)")
-//    print("vb: \(vb.count)")
-//    print("dnw: \(dnw.count)")
-//    print("dne: \(dne.count)")
-//    print("dsw: \(dsw.count)")
-//    print("dse: \(dse.count)")
-
-//    print("hf: \(hf.count)\nhb: \(hb.count)\nvf: \(vf.count)\nvb: \(vb.count)\ndnw: \(dnw.count)\ndne: \(dne.count)\ndsw: \(dsw.count)\ndse: \(dse.count)\nTotal: \(total)")
 
     let word = ["X", "M", "A", "S"].map(Character.init)
     var xmasTotal = 0
@@ -89,11 +55,49 @@ struct Day04: AdventDay {
       }
     }
 
-    for f in foundWords {
-      print(f)
+//    for f in foundWords {
+//      print(f)
+//    }
+//    print(asCharacters.filter{$0 == Character("X")}.count)
+    
+    print(xmasTotal) // 2549 is too high
+
+
+    let matrix = data.split(separator: "\n").map { $0.split(separator: "")}
+
+    let limitTop = 2
+    let limitBottom = matrix.count - 3
+    let limitLeft = 2
+    let limitRight = matrix[0].count - 3
+
+    var total2 = 0
+
+    for r in 0..<matrix.count {
+      let row = matrix[r]
+      for c in 0..<row.count {
+        let cell = row[c]
+        if cell == "X" {
+          // to the right
+          if c < limitRight  && matrix[r][c+1] == "M" && matrix[r][c+2] == "A" && matrix[r][c+3] == "S" { total2 += 1 }
+          // to the left
+          if c > limitLeft   && matrix[r][c-1] == "M" && matrix[r][c-2] == "A" && matrix[r][c-3] == "S" { total2 += 1 }
+          // top down
+          if r < limitBottom && matrix[r+1][c] == "M" && matrix[r+2][c] == "A" && matrix[r+3][c] == "S" { total2 += 1 }
+          // bottom up
+          if r > limitTop    && matrix[r-1][c] == "M" && matrix[r-2][c] == "A" && matrix[r-3][c] == "S" { total2 += 1 }
+          // upper-left to lower-right
+          if r < limitBottom && c < limitRight && matrix[r+1][c+1] == "M" && matrix[r+2][c+2] == "A" && matrix[r+3][c+3] == "S" {total2 += 1}
+          // upper-right to lower-left
+          if r < limitBottom && c > limitLeft  && matrix[r+1][c-1] == "M" && matrix[r+2][c-2] == "A" && matrix[r+3][c-3] == "S" {total2 += 1}
+          // lower-left to upper-right
+          if r > limitTop && c < limitRight    && matrix[r-1][c+1] == "M" && matrix[r-2][c+2] == "A" && matrix[r-3][c+3] == "S" {total2 += 1}
+          // lower-right to upper-left
+          if r > limitTop && c > limitLeft     && matrix[r-1][c-1] == "M" && matrix[r-2][c-2] == "A" && matrix[r-3][c-3] == "S" {total2 += 1}
+        }
+      }
     }
 
-    return xmasTotal // 2549 is too high
+    return total2 // 2532
   }
 
   func part2() -> Any {
