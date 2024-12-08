@@ -44,6 +44,23 @@ struct Day04: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    let matrix = data.split(separator: "\n").map { $0.split(separator: "")}
+    var total = 0
+
+    for r in 1..<matrix.count-1 {
+      let row = matrix[r]
+      for c in 1..<row.count-1 {
+        if matrix[r][c] == "A" {
+          if ((matrix[r-1][c-1] == "M" && matrix[r+1][c+1] == "S") ||
+              (matrix[r+1][c+1] == "M" && matrix[r-1][c-1] == "S")) &&
+             ((matrix[r-1][c+1] == "M" && matrix[r+1][c-1] == "S") ||
+              (matrix[r+1][c-1] == "M" && matrix[r-1][c+1] == "S")) {
+            total += 1
+          }
+        }
+      }
+    }
+
+    return total // 1941
   }
 }
