@@ -35,6 +35,17 @@ struct Day06: AdventDay {
       floor.filter { $0.1.visited }.count
     }
 
+    var visitedLocations: [Coordinate] {
+      floor.filter(\.1.visited).map(\.0)
+    }
+
+    init(copy cleanFloor: Floor) {
+      self.floor = cleanFloor.cleanFloor
+      self.cleanFloor = cleanFloor.cleanFloor
+      self.startAt = cleanFloor.startAt
+      self.boundaries = cleanFloor.boundaries
+    }
+
     init(data: String) {
 
       var floor: [Coordinate: Location] = [:]
@@ -88,7 +99,7 @@ struct Day06: AdventDay {
           directionIndex = (directionIndex + 1) % directions.count
           // continue
         } else {
-          print("enteredVia \(floor[coordinate]!.enteredVia) on step \(step)")
+//          print("enteredVia \(floor[coordinate]!.enteredVia) on step \(step)")
           if nextLocation.enteredVia[directionIndex] {
             loopDetected = true
             return
@@ -117,9 +128,28 @@ struct Day06: AdventDay {
   }
 
   func part2() -> Any {
+    // initialize the visited coordinates
+    floor.run()
+
+    // try placing an obstacle in every originally visited location, not including the starting point
+
     var loopingObstacles: [Coordinate] = []
 
+    for coordinate in floor.visitedLocations {
+      // skip the guard's starting location
+      if coordinate == floor.startAt {
+        print("skipping guard starting location")
+        continue
+      }
 
-    return loopingObstacles.count
+      let f = Floor(copy: floor)
+      f.floor[coordinate, default: Location()].obstacle = true
+      f.run()
+      if f.loopDetected {
+        loopingObstacles.append(coordinate)
+      }
+    }
+
+    return loopingObstacles.count // 1729
   }
 }

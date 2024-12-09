@@ -81,7 +81,7 @@ struct Day02: AdventDay {
     // In the end, I just did brute force.
 
     let safeWithDamper = entities.filter(\.safeWithProblemDampener).count
-    print("Safe with dampener: \(safeWithDamper) of \(entities.count)")
+//    print("Safe with dampener: \(safeWithDamper) of \(entities.count)")
     return safeWithDamper // 426
   }
 }

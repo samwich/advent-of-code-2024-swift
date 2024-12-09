@@ -28,6 +28,7 @@ struct Day06Tests {
   @Test func testPart1() async throws {
     let challenge = Day06(data: testData)
     #expect(String(describing: challenge.part1()) == "41")
+    #expect(!challenge.floor.loopDetected)
   }
 
   @Test func testDetectLoop() async throws {
