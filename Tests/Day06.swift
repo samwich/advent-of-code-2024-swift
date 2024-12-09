@@ -19,13 +19,25 @@ struct Day06Tests {
     ......#...
     """
 
+  let loopTestData = """
+  .#..
+  #^.#
+  ..#.
+  """
+
   @Test func testPart1() async throws {
     let challenge = Day06(data: testData)
     #expect(String(describing: challenge.part1()) == "41")
   }
 
+  @Test func testDetectLoop() async throws {
+    let floor = Day06.Floor(data: loopTestData)
+    floor.run()
+    #expect(floor.loopDetected)
+  }
+
   @Test func testPart2() async throws {
     let challenge = Day06(data: testData)
-    #expect(String(describing: challenge.part2()) == "part2")
+    #expect(String(describing: challenge.part2()) == "6")
   }
 }
