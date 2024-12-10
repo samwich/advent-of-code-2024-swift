@@ -138,7 +138,7 @@ struct Day06: AdventDay {
     for coordinate in floor.visitedLocations {
       // skip the guard's starting location
       if coordinate == floor.startAt {
-        print("skipping guard starting location")
+//        print("skipping guard starting location")
         continue
       }
 

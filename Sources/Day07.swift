@@ -15,7 +15,7 @@ struct Day07: AdventDay {
     let result: Int
     let inputs: [Int]
 
-    let operators: [(Int, Int) -> Int] = [{$0 + $1}, {$0 * $1}]
+    var operators: [(Int, Int) -> Int] = [{$0 + $1}, {$0 * $1}]
 
     var equal: Bool {
       check(elements: inputs)
@@ -23,6 +23,7 @@ struct Day07: AdventDay {
 
     func check(elements: [Int]) -> Bool {
 //      print(elements)
+//      print("\(operators.count) operators")
 
       // combine the first two elements and then pass the rest of the list into myself
       for o in operators {
@@ -49,13 +50,26 @@ struct Day07: AdventDay {
 
   }
 
+  func concatenate(_ a: Int, _ b: Int) -> Int {
+    let digitCount = String(b).count
+    var bigA = a
+    for _ in 0..<digitCount {
+      bigA *= 10
+    }
+
+    return bigA + b
+  }
+
   func part1() -> Any {
-//    print(entities)
-//    print(entities.map(\.equal))
     return entities.filter(\.equal).map(\.result).reduce(0, +) // 1430271835320
   }
 
   func part2() -> Any {
-    return 0
+    let operators: [(Int, Int) -> Int] = [{$0 + $1}, {$0 * $1}, concatenate]
+    return entities.map {
+      var e = $0
+      e.operators = operators
+      return e
+    }.filter(\.equal).map(\.result).reduce(0, +) // 456565678667482
   }
 }
