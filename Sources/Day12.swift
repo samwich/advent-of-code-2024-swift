@@ -22,12 +22,20 @@ struct Day12: AdventDay {
       regions.keys.map { areaForRegion($0) * perimeterForRegion($0) }.reduce(0,+)
     }
 
+    var discountPrice: Int {
+      regions.keys.map { areaForRegion($0) * discountPerimeterForRegion($0) }.reduce(0,+)
+    }
+
     func areaForRegion(_ regionId: Int) -> Int {
       regions[regionId]!.count
     }
 
     func perimeterForRegion(_ regionId: Int) -> Int {
       regions[regionId]!.map { grid[$0]!.fences }.reduce(0,+)
+    }
+
+    func discountPerimeterForRegion(_ regionId: Int) -> Int {
+      regions[regionId]!.map { grid[$0]!.discountFences }.reduce(0,+)
     }
 
 
@@ -105,6 +113,24 @@ struct Day12: AdventDay {
     var regionId: Int?
     let neighbors: [Point]
     let fences: Int
+    let neighborSides: (w: Bool, e: Bool, n: Bool, s: Bool, nw: Bool, ne: Bool, sw: Bool, se: Bool)
+
+    var discountFences: Int {
+      var result = 0
+      // convex corners
+      if !neighborSides.w && !neighborSides.n { result += 1 }
+      if !neighborSides.n && !neighborSides.e { result += 1 }
+      if !neighborSides.e && !neighborSides.s { result += 1 }
+      if !neighborSides.s && !neighborSides.w { result += 1 }
+
+      // concave corners
+      if neighborSides.w && neighborSides.n && !neighborSides.nw { result += 1 }
+      if neighborSides.n && neighborSides.e && !neighborSides.ne { result += 1 }
+      if neighborSides.e && neighborSides.s && !neighborSides.se { result += 1 }
+      if neighborSides.s && neighborSides.w && !neighborSides.sw { result += 1 }
+
+      return result
+    }
 
     init (x: Int, y: Int, entities: [[Substring]]) {
       self.x = x
@@ -115,10 +141,21 @@ struct Day12: AdventDay {
       let xCount = entities.first!.count
       let yCount = entities.count
       var neighbors: [Point] = []
-      if x > 0        && entities[y][x-1] == plant { neighbors.append(Point(x: x - 1, y: y)) }
-      if x < xCount-1 && entities[y][x+1] == plant { neighbors.append(Point(x: x + 1, y: y)) }
-      if y > 0        && entities[y-1][x] == plant { neighbors.append(Point(x: x, y: y - 1)) }
-      if y < yCount-1 && entities[y+1][x] == plant { neighbors.append(Point(x: x, y: y + 1)) }
+      neighborSides = (
+        w: x > 0        && entities[y][x-1] == plant,
+        e: x < xCount-1 && entities[y][x+1] == plant,
+        n: y > 0        && entities[y-1][x] == plant,
+        s: y < yCount-1 && entities[y+1][x] == plant,
+        nw: x > 0 && y > 0 && entities[y-1][x-1] == plant,
+        ne: x < xCount-1 && y > 0 && entities[y-1][x+1] == plant,
+        sw: x > 0 && y < yCount-1 && entities[y+1][x-1] == plant,
+        se: x < xCount-1 && y < yCount-1 && entities[y+1][x+1] == plant
+      )
+
+      if neighborSides.w { neighbors.append(Point(x: x - 1, y: y)) }
+      if neighborSides.e { neighbors.append(Point(x: x + 1, y: y)) }
+      if neighborSides.n { neighbors.append(Point(x: x, y: y - 1)) }
+      if neighborSides.s { neighbors.append(Point(x: x, y: y + 1)) }
 
       self.neighbors = neighbors
       self.fences = 4 - neighbors.count
@@ -136,6 +173,7 @@ struct Day12: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    let g = Garden(entities: entities)
+    return g.discountPrice // 862714
   }
 }
