@@ -29,7 +29,7 @@ struct Day11: AdventDay {
 
   func play1(steps: Int, stones: [Int]) -> [Int] {
     var stepStones = stones
-    for i in 0..<steps {
+    for _i in 0..<steps {
 //      print("Beginning iteration \(i)")
       stepStones = blink1(stones: stepStones)
 //      print("i = \(i)")
